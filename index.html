@@ -288,23 +288,27 @@
 
     #settings-drawer {
       display: none;
-      position: fixed;
-      inset: 0;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
       background: var(--bg);
-      z-index: 300;
+      z-index: 9999 !important;
       flex-direction: column;
       overflow-y: auto;
     }
-    #settings-drawer.open { display: flex; }
+    #settings-drawer.open { display: flex !important; }
 
     .drawer-header {
       display: flex;
       align-items: center;
       gap: 14px;
-      padding: 24px 40px;
+      padding: 20px 48px;
       background: #fff;
       border-bottom: 1px solid var(--border);
       position: sticky; top: 0; z-index: 10;
+      flex-shrink: 0;
     }
     .drawer-header h2 { font-size: 20px; font-weight: 800; color: var(--text); }
     .drawer-close {
@@ -322,9 +326,9 @@
     .drawer-close:hover { background: var(--bg); }
 
     .drawer-body {
-      padding: 36px 40px;
-      max-width: 640px;
+      padding: 40px 48px;
       width: 100%;
+      max-width: 760px;
     }
 
     .drawer-section-title {
