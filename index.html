@@ -362,6 +362,38 @@
 
     .card-btn:hover { opacity: 0.85; }
 
+    /* ── SEARCH ── */
+    #search-wrap {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 7px 14px;
+      width: 240px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    #search-wrap:focus-within {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px #6366f120;
+    }
+
+    #search-wrap svg { flex-shrink: 0; color: #94a3b8; }
+
+    #search-input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 13px;
+      color: var(--text);
+      width: 100%;
+    }
+
+    #search-input::placeholder { color: #94a3b8; }
+
     /* ── EMPTY STATE ── */
     .empty {
       grid-column: 1/-1;
@@ -377,20 +409,25 @@
 <!-- ─────────── SIDEBAR ─────────── -->
 <nav id="sidebar">
   <div class="sidebar-brand">
-    <h1>⚡ AI Hub</h1>
-    <span>AI 서비스 모음집</span>
+    <h1>⚡ My_APP</h1>
   </div>
   <div class="sidebar-nav">
     <div class="nav-label">카테고리</div>
     <!-- nav items rendered by JS -->
   </div>
-  <div class="sidebar-footer">2026 · AI Hub</div>
+  <div class="sidebar-footer">2026 · My_APP</div>
 </nav>
 
 <!-- ─────────── MAIN ─────────── -->
 <div id="main">
   <header id="topbar">
     <div id="topbar-title">Loading...</div>
+    <div id="search-wrap">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input id="search-input" type="text" placeholder="카드 검색..." />
+    </div>
   </header>
   <div id="subnav"></div>
   <div id="content">
@@ -489,21 +526,6 @@ const CATEGORIES = [
       { name:"Pika",              sub:"비디오 생성", desc:"텍스트와 이미지로 비디오를 생성하는 AI 서비스입니다.",                                    url:"https://pika.art",                    color:"#8b5cf6" },
       { name:"Kling AI",          sub:"비디오 생성", desc:"Kuaishou의 고품질 AI 비디오 생성 서비스. 5분 길이 영상 생성이 가능합니다.",               url:"https://klingai.com",                 color:"#0f172a" },
       { name:"Sora",              sub:"비디오 생성", desc:"OpenAI의 텍스트-투-비디오 AI. 사실적인 영상과 상상력 넘치는 장면을 생성합니다.",           url:"https://sora.com",                    color:"#10b981" },
-    ]
-  },
-  {
-    id: "music",
-    label: "AI 음악",
-    icon: "🎵",
-    color: "#f59e0b",
-    subs: ["전체", "음악 생성", "음성 합성"],
-    services: [
-      { name:"SUNO",       sub:"음악 생성", desc:"텍스트 프롬프트만으로 완성된 노래(가사·멜로디·보컬)를 만들어 주는 AI입니다.",          url:"https://suno.com",           color:"#7c3aed" },
-      { name:"Udio",       sub:"음악 생성", desc:"고품질 AI 음악 생성 플랫폼. 다양한 장르와 스타일의 음악을 생성할 수 있습니다.",        url:"https://www.udio.com",        color:"#ec4899" },
-      { name:"Beatoven",   sub:"음악 생성", desc:"영상·콘텐츠용 AI 배경음악 생성 서비스. 무드와 장르를 선택해 맞춤 음악을 제작합니다.", url:"https://www.beatoven.ai",     color:"#10b981" },
-      { name:"Mubert",     sub:"음악 생성", desc:"AI 기반 실시간 음악 스트리밍 및 생성 플랫폼. 개발자 API도 제공합니다.",              url:"https://mubert.com",          color:"#3b82f6" },
-      { name:"ElevenLabs", sub:"음성 합성", desc:"가장 자연스러운 AI 음성 합성 서비스. 음성 복제와 다국어 더빙 기능도 지원합니다.",     url:"https://elevenlabs.io",       color:"#f59e0b" },
-      { name:"Musicfy",    sub:"음성 합성", desc:"AI 음성 커버 생성 서비스. 좋아하는 아티스트 목소리로 커버곡을 만들 수 있습니다.",     url:"https://musicfy.lol",         color:"#6366f1" },
     ]
   },
   {
@@ -662,11 +684,11 @@ function renderSubnav() {
 }
 
 function renderCards() {
-  const cat   = CATEGORIES.find(c => c.id === activeCatId);
-  const grid  = document.getElementById("cards-grid");
-  const items = activeSub === "전체"
-    ? cat.services
-    : cat.services.filter(s => s.sub === activeSub);
+  const cat      = CATEGORIES.find(c => c.id === activeCatId);
+  const grid     = document.getElementById("cards-grid");
+  const query    = document.getElementById("search-input").value.trim().toLowerCase();
+  let   items    = activeSub === "전체" ? cat.services : cat.services.filter(s => s.sub === activeSub);
+  if (query) items = items.filter(s => s.name.toLowerCase().includes(query) || s.desc.toLowerCase().includes(query));
 
   grid.innerHTML = "";
 
@@ -720,6 +742,8 @@ function renderAll() {
 }
 
 renderAll();
+
+document.getElementById("search-input").addEventListener("input", renderCards);
 </script>
 </body>
 </html>
