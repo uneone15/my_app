@@ -428,6 +428,30 @@ const CATEGORIES = [
     ]
   },
   {
+    id: "design",
+    label: "디자인 래퍼",
+    icon: "🖼️",
+    color: "#f43f5e",
+    subs: ["전체", "디자인 영감", "UX 레퍼런스", "아티클 & 트렌드", "그라디언트"],
+    services: [
+      { name:"Awwwards",        sub:"디자인 영감",       desc:"세계 최고 수준의 웹 디자인 수상작 모음. 최신 웹 디자인 트렌드와 인터랙션을 탐색할 수 있습니다.", url:"https://www.awwwards.com",            color:"#1a1a1a" },
+      { name:"Behance",         sub:"디자인 영감",       desc:"Adobe의 크리에이티브 포트폴리오 플랫폼. 전 세계 디자이너들의 작업물을 탐색할 수 있습니다.",    url:"https://www.behance.net",             color:"#0057ff" },
+      { name:"Pinterest",       sub:"디자인 영감",       desc:"비주얼 영감 수집 플랫폼. 디자인·인테리어·일러스트 등 이미지 레퍼런스 수집에 최적입니다.",      url:"https://www.pinterest.co.kr",         color:"#e60023" },
+      { name:"Gdweb",           sub:"디자인 영감",       desc:"국내 웹 디자인 트렌드를 한눈에 볼 수 있는 한국 웹디자인 갤러리 플랫폼입니다.",                 url:"https://www.gdweb.co.kr",             color:"#6366f1" },
+      { name:"Cargo",           sub:"디자인 영감",       desc:"크리에이티브 포트폴리오 사이트 빌더. 독특하고 예술적인 디자인 템플릿이 풍부합니다.",           url:"https://cargo.site/Templates",        color:"#1a1a1a" },
+      { name:"WWIT",            sub:"디자인 영감",       desc:"국내외 우수 웹사이트를 큐레이션하는 한국 웹 디자인 영감 플랫폼입니다.",                        url:"https://wwit.design",                 color:"#7c3aed" },
+      { name:"Dribbble",        sub:"디자인 영감",       desc:"디자이너들의 포트폴리오·영감 공유 커뮤니티. UI 디자인 트렌드를 한눈에 파악할 수 있습니다.",    url:"https://dribbble.com",                color:"#ec4899" },
+      { name:"웹디자인 벤치마킹", sub:"디자인 영감",      desc:"국내 웹 디자인 벤치마킹 레퍼런스 플랫폼. 다양한 국내 사이트 사례를 모아볼 수 있습니다.",      url:"http://dbdic.co.kr",                  color:"#f97316" },
+      { name:"디자이너스",       sub:"디자인 영감",       desc:"국내 디자이너들을 위한 디자인 레퍼런스 큐레이션 플랫폼입니다.",                               url:"https://designus.io/reference",       color:"#10b981" },
+      { name:"UXArchive",       sub:"UX 레퍼런스",      desc:"모바일 앱의 UX 플로우와 패턴을 아카이빙한 레퍼런스 사이트입니다.",                            url:"https://uxarchive.com",               color:"#3b82f6" },
+      { name:"요즘IT",           sub:"아티클 & 트렌드",  desc:"IT·디자인·개발 트렌드 아티클 플랫폼. 실무자들의 인사이트 글을 모아볼 수 있습니다.",            url:"https://yozm.wishket.com/magazine",   color:"#f59e0b" },
+      { name:"서핏",             sub:"아티클 & 트렌드",  desc:"개발·디자인·기획 분야 아티클 큐레이션 서비스. 매일 좋은 글을 추천받을 수 있습니다.",           url:"https://www.surfit.io",               color:"#6366f1" },
+      { name:"uiGradients",     sub:"그라디언트",        desc:"아름다운 CSS 그라디언트 모음. 코드를 바로 복사해서 사용할 수 있습니다.",                       url:"https://uigradients.com",             color:"#ec4899" },
+      { name:"Eggradients",     sub:"그라디언트",        desc:"계란 모양으로 미리보기하는 그라디언트 컬러 팔레트 모음 사이트입니다.",                         url:"https://eggradients.com",             color:"#f97316" },
+      { name:"MyColor Space",   sub:"그라디언트",        desc:"색상 입력 시 어울리는 그라디언트·팔레트를 자동으로 생성해 주는 색상 도구입니다.",              url:"https://mycolor.space",               color:"#8b5cf6" },
+    ]
+  },
+  {
     id: "ai-assistant",
     label: "AI 어시스턴트",
     icon: "🤖",
@@ -528,25 +552,6 @@ const CATEGORIES = [
       { name:"Papers With Code",  sub:"뉴스 & 트렌드", desc:"최신 AI 논문과 코드 구현을 연결하는 플랫폼. 최신 SOTA 모델을 추적합니다.",                   url:"https://paperswithcode.com",         color:"#6366f1" },
       { name:"Arxiv (cs.AI)",     sub:"뉴스 & 트렌드", desc:"AI·ML 분야 최신 논문 프리프린트 저장소. 매일 수십 편의 최신 연구가 올라옵니다.",             url:"https://arxiv.org/list/cs.AI/recent", color:"#8b5cf6" },
       { name:"The Rundown AI",    sub:"뉴스 & 트렌드", desc:"AI 분야 최신 뉴스를 매일 요약·정리해서 전달하는 뉴스레터 서비스입니다.",                    url:"https://www.therundown.ai",          color:"#f59e0b" },
-    ]
-  },
-  {
-    id: "design",
-    label: "디자인 래퍼",
-    icon: "🖼️",
-    color: "#f43f5e",
-    subs: ["전체", "UI 프레임워크", "컴포넌트 라이브러리", "디자인 툴"],
-    services: [
-      { name:"Tailwind CSS",   sub:"UI 프레임워크",     desc:"유틸리티 퍼스트 CSS 프레임워크. 빠른 UI 구축과 일관된 디자인 시스템 구성에 최적입니다.",     url:"https://tailwindcss.com",              color:"#0ea5e9" },
-      { name:"Bootstrap",      sub:"UI 프레임워크",     desc:"세계에서 가장 많이 쓰이는 CSS 프레임워크. 반응형 그리드와 컴포넌트를 즉시 사용할 수 있습니다.", url:"https://getbootstrap.com",            color:"#7c3aed" },
-      { name:"shadcn/ui",      sub:"컴포넌트 라이브러리", desc:"Radix UI + Tailwind 기반 고품질 컴포넌트 모음. 코드를 직접 소유하는 방식이 특징입니다.",     url:"https://ui.shadcn.com",               color:"#1a1a1a" },
-      { name:"Radix UI",       sub:"컴포넌트 라이브러리", desc:"접근성 중심의 헤드리스 UI 컴포넌트 라이브러리. shadcn/ui의 기반이 됩니다.",                 url:"https://www.radix-ui.com",            color:"#6366f1" },
-      { name:"Material UI",    sub:"컴포넌트 라이브러리", desc:"Google Material Design 기반의 React UI 컴포넌트 라이브러리입니다.",                         url:"https://mui.com",                     color:"#0ea5e9" },
-      { name:"Ant Design",     sub:"컴포넌트 라이브러리", desc:"엔터프라이즈급 React UI 컴포넌트 라이브러리. 풍부한 컴포넌트와 한국어 지원이 강점입니다.",   url:"https://ant.design",                  color:"#f43f5e" },
-      { name:"Figma",          sub:"디자인 툴",         desc:"세계 표준 UI/UX 디자인 협업 툴. 프로토타이핑·핸드오프·디자인 시스템 관리를 지원합니다.",     url:"https://www.figma.com",               color:"#f97316" },
-      { name:"Dribbble",       sub:"디자인 툴",         desc:"디자이너들의 포트폴리오·영감 공유 커뮤니티. UI 디자인 트렌드를 한눈에 파악할 수 있습니다.",   url:"https://dribbble.com",                color:"#ec4899" },
-      { name:"Awwwards",       sub:"디자인 툴",         desc:"세계 최고 수준의 웹 디자인 수상작 모음. 최신 웹 디자인 트렌드와 인터랙션을 탐색할 수 있습니다.", url:"https://www.awwwards.com",            color:"#1a1a1a" },
-      { name:"CodePen",        sub:"디자인 툴",         desc:"브라우저에서 HTML·CSS·JS를 바로 실험하는 온라인 에디터. UI 스니펫 탐색에도 유용합니다.",      url:"https://codepen.io",                  color:"#10b981" },
     ]
   }
 ];
