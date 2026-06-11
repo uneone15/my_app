@@ -264,54 +264,50 @@
     }
     .visitor-count span { color: #94a3b8; font-weight: 600; }
 
-    /* ── SETTINGS DRAWER ── */
-    #settings-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.35);
-      z-index: 199;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .25s;
-    }
-    #settings-overlay.open { opacity: 1; pointer-events: auto; }
+    /* ── SETTINGS PAGE ── */
+    #settings-overlay { display: none; }
 
     #settings-drawer {
+      display: none;
       position: fixed;
-      top: 0; right: -380px;
-      width: 360px;
-      height: 100vh;
-      background: #fff;
-      box-shadow: -6px 0 32px rgba(0,0,0,.12);
-      z-index: 200;
-      transition: right .28s cubic-bezier(.4,0,.2,1);
-      display: flex;
+      top: 0; left: var(--sidebar-w);
+      right: 0; bottom: 0;
+      background: var(--bg);
+      z-index: 150;
       flex-direction: column;
+      overflow-y: auto;
     }
-    #settings-drawer.open { right: 0; }
+    #settings-drawer.open { display: flex; }
 
     .drawer-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 20px 24px;
+      gap: 14px;
+      padding: 24px 40px;
+      background: #fff;
       border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 10;
     }
-    .drawer-header h2 { font-size: 17px; font-weight: 700; color: var(--text); }
+    .drawer-header h2 { font-size: 20px; font-weight: 800; color: var(--text); }
     .drawer-close {
-      width: 32px; height: 32px;
-      border-radius: 8px;
-      border: none;
-      background: var(--bg);
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #fff;
       cursor: pointer;
       font-size: 16px;
       color: var(--text-muted);
       display: flex; align-items: center; justify-content: center;
       transition: background .15s;
+      margin-left: auto;
     }
-    .drawer-close:hover { background: var(--border); }
+    .drawer-close:hover { background: var(--bg); }
 
-    .drawer-body { padding: 20px 24px; overflow-y: auto; flex: 1; }
+    .drawer-body {
+      padding: 36px 40px;
+      max-width: 640px;
+      width: 100%;
+    }
 
     .drawer-section-title {
       font-size: 11px;
@@ -634,6 +630,7 @@
     <div class="auth-error" id="auth-error">비밀번호가 틀렸습니다</div>
     <button class="auth-btn" id="auth-submit">확인</button>
     <div class="auth-cancel" id="auth-cancel">취소</div>
+    <div class="auth-cancel" id="auth-reset" style="color:#475569;margin-top:-8px">비밀번호 초기화</div>
   </div>
 </div>
 
@@ -1020,21 +1017,25 @@ function openAuthModal(mode = 'login', onSuccess) {
   document.getElementById('auth-pw2').value = '';
   err.style.display = 'none';
 
+  const resetBtn = document.getElementById('auth-reset');
   if (mode === 'setup') {
-    title.textContent  = '🔑 비밀번호 설정';
-    desc.textContent   = '처음 사용합니다. 비밀번호를 설정하세요.';
-    pw2.style.display  = 'block';
-    submit.textContent = '비밀번호 설정';
+    title.textContent      = '🔑 비밀번호 설정';
+    desc.textContent       = '처음 사용합니다. 비밀번호를 설정하세요.';
+    pw2.style.display      = 'block';
+    submit.textContent     = '비밀번호 설정';
+    resetBtn.style.display = 'none';
   } else if (mode === 'change') {
-    title.textContent  = '🔑 비밀번호 변경';
-    desc.textContent   = '새 비밀번호를 입력하세요.';
-    pw2.style.display  = 'block';
-    submit.textContent = '변경';
+    title.textContent      = '🔑 비밀번호 변경';
+    desc.textContent       = '새 비밀번호를 입력하세요.';
+    pw2.style.display      = 'block';
+    submit.textContent     = '변경';
+    resetBtn.style.display = 'none';
   } else {
-    title.textContent  = '🔒 설정 잠금 해제';
-    desc.textContent   = '비밀번호를 입력하세요.';
-    pw2.style.display  = 'none';
-    submit.textContent = '확인';
+    title.textContent      = '🔒 설정 잠금 해제';
+    desc.textContent       = '비밀번호를 입력하세요.';
+    pw2.style.display      = 'none';
+    submit.textContent     = '확인';
+    resetBtn.style.display = 'block';
   }
 
   document.getElementById('auth-overlay').classList.add('open');
@@ -1090,6 +1091,14 @@ document.getElementById('auth-pw2').addEventListener('keydown', e => {
 });
 document.getElementById('auth-cancel').addEventListener('click', closeAuthModal);
 
+document.getElementById('auth-reset').addEventListener('click', () => {
+  if (confirm('비밀번호를 초기화하고 새로 설정할까요?')) {
+    localStorage.removeItem('myapp_pw_hash');
+    sessionStorage.removeItem('myapp_admin');
+    openAuthModal('setup', openSettings);
+  }
+});
+
 // ── SETTINGS ──────────────────────────────────────────────────────────────
 function openSettings() {
   const list = document.getElementById('cat-toggle-list');
@@ -1125,12 +1134,10 @@ function openSettings() {
     list.appendChild(row);
   });
   document.getElementById('settings-drawer').classList.add('open');
-  document.getElementById('settings-overlay').classList.add('open');
 }
 
 function closeSettings() {
   document.getElementById('settings-drawer').classList.remove('open');
-  document.getElementById('settings-overlay').classList.remove('open');
 }
 
 document.getElementById('settings-open-btn').addEventListener('click', () => {
@@ -1141,7 +1148,6 @@ document.getElementById('settings-open-btn').addEventListener('click', () => {
 });
 
 document.getElementById('settings-close-btn').addEventListener('click', closeSettings);
-document.getElementById('settings-overlay').addEventListener('click', closeSettings);
 
 document.getElementById('change-pw-btn').addEventListener('click', () => {
   closeSettings();
