@@ -167,12 +167,143 @@
       flex-shrink: 0;
     }
 
+    /* ── SETTINGS BTN ── */
+    .settings-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 24px;
+      cursor: pointer;
+      color: #475569;
+      font-size: 13px;
+      font-weight: 500;
+      border-top: 1px solid #1e293b;
+      transition: background .18s, color .15s;
+    }
+    .settings-btn:hover { background: #1e293b; color: #94a3b8; }
+    .settings-btn svg { flex-shrink: 0; }
+
     .sidebar-footer {
-      padding: 16px 20px;
+      padding: 14px 20px;
       border-top: 1px solid #1e293b;
       font-size: 11px;
       color: #334155;
     }
+
+    .visitor-count {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #475569;
+      margin-top: 6px;
+    }
+    .visitor-count span { color: #94a3b8; font-weight: 600; }
+
+    /* ── SETTINGS DRAWER ── */
+    #settings-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.35);
+      z-index: 199;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s;
+    }
+    #settings-overlay.open { opacity: 1; pointer-events: auto; }
+
+    #settings-drawer {
+      position: fixed;
+      top: 0; right: -380px;
+      width: 360px;
+      height: 100vh;
+      background: #fff;
+      box-shadow: -6px 0 32px rgba(0,0,0,.12);
+      z-index: 200;
+      transition: right .28s cubic-bezier(.4,0,.2,1);
+      display: flex;
+      flex-direction: column;
+    }
+    #settings-drawer.open { right: 0; }
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .drawer-header h2 { font-size: 17px; font-weight: 700; color: var(--text); }
+    .drawer-close {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      border: none;
+      background: var(--bg);
+      cursor: pointer;
+      font-size: 16px;
+      color: var(--text-muted);
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .drawer-close:hover { background: var(--border); }
+
+    .drawer-body { padding: 20px 24px; overflow-y: auto; flex: 1; }
+
+    .drawer-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .cat-toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .cat-toggle-row:last-child { border-bottom: none; }
+
+    .cat-toggle-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .cat-toggle-info .t-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+    }
+
+    /* Toggle switch */
+    .toggle-switch { position: relative; width: 42px; height: 24px; flex-shrink: 0; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-track {
+      position: absolute; inset: 0;
+      background: #cbd5e1;
+      border-radius: 24px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      left: 3px; top: 3px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform .2s;
+      box-shadow: 0 1px 4px rgba(0,0,0,.2);
+    }
+    .toggle-switch input:checked + .toggle-track { background: #6366f1; }
+    .toggle-switch input:checked + .toggle-track::after { transform: translateX(18px); }
 
     /* ── MAIN ── */
     #main {
@@ -415,8 +546,32 @@
     <div class="nav-label">카테고리</div>
     <!-- nav items rendered by JS -->
   </div>
-  <div class="sidebar-footer">2026 · My_APP</div>
+  <div class="settings-btn" id="settings-open-btn">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+    설정
+  </div>
+  <div class="sidebar-footer">
+    <div>2026 · My_APP</div>
+    <div class="visitor-count">
+      👁 방문자 <span id="visit-num">...</span>
+    </div>
+  </div>
 </nav>
+
+<!-- ─────────── SETTINGS DRAWER ─────────── -->
+<div id="settings-overlay"></div>
+<div id="settings-drawer">
+  <div class="drawer-header">
+    <h2>⚙️ 설정</h2>
+    <button class="drawer-close" id="settings-close-btn">✕</button>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section-title">카테고리 공개 / 비공개</div>
+    <div id="cat-toggle-list"></div>
+  </div>
+</div>
 
 <!-- ─────────── MAIN ─────────── -->
 <div id="main">
@@ -582,8 +737,20 @@ const CATEGORIES = [
 ];
 
 // ── STATE ──────────────────────────────────────────────────────────────────
-let activeCatId  = CATEGORIES[0].id;
-let activeSub    = "전체";
+let hiddenCats  = JSON.parse(localStorage.getItem('myapp_hidden') || '[]');
+let activeCatId = CATEGORIES.find(c => !hiddenCats.includes(c.id))?.id || CATEGORIES[0].id;
+let activeSub   = "전체";
+
+// ── VISITOR COUNT ─────────────────────────────────────────────────────────
+(function() {
+  if (!sessionStorage.getItem('visited')) {
+    sessionStorage.setItem('visited', '1');
+    const v = parseInt(localStorage.getItem('myapp_visits') || '0') + 1;
+    localStorage.setItem('myapp_visits', v);
+  }
+  const el = document.getElementById('visit-num');
+  if (el) el.textContent = Number(localStorage.getItem('myapp_visits')).toLocaleString();
+})();
 
 // ── HELPERS ───────────────────────────────────────────────────────────────
 function getInitial(name) {
@@ -604,7 +771,7 @@ function lighten(hex, pct = 0.15) {
 function renderSidebar() {
   const nav = document.querySelector(".sidebar-nav");
   nav.innerHTML = `<div class="nav-label">카테고리</div>`;
-  CATEGORIES.forEach(cat => {
+  CATEGORIES.filter(c => !hiddenCats.includes(c.id)).forEach(cat => {
     const isActive = cat.id === activeCatId;
     const wrapper  = document.createElement("div");
 
@@ -744,6 +911,53 @@ function renderAll() {
 renderAll();
 
 document.getElementById("search-input").addEventListener("input", renderCards);
+
+// ── SETTINGS ──────────────────────────────────────────────────────────────
+function openSettings() {
+  const list = document.getElementById('cat-toggle-list');
+  list.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const isVisible = !hiddenCats.includes(cat.id);
+    const row = document.createElement('div');
+    row.className = 'cat-toggle-row';
+    row.innerHTML = `
+      <div class="cat-toggle-info">
+        <div class="t-icon" style="background:${cat.color}18">${cat.icon}</div>
+        <span>${cat.label}</span>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" ${isVisible ? 'checked' : ''} data-id="${cat.id}" />
+        <span class="toggle-track"></span>
+      </label>
+    `;
+    row.querySelector('input').addEventListener('change', (e) => {
+      const id = e.target.dataset.id;
+      if (e.target.checked) {
+        hiddenCats = hiddenCats.filter(c => c !== id);
+      } else {
+        if (!hiddenCats.includes(id)) hiddenCats.push(id);
+        if (activeCatId === id) {
+          activeCatId = CATEGORIES.find(c => !hiddenCats.includes(c.id))?.id || CATEGORIES[0].id;
+          activeSub = '전체';
+        }
+      }
+      localStorage.setItem('myapp_hidden', JSON.stringify(hiddenCats));
+      renderAll();
+    });
+    list.appendChild(row);
+  });
+  document.getElementById('settings-drawer').classList.add('open');
+  document.getElementById('settings-overlay').classList.add('open');
+}
+
+function closeSettings() {
+  document.getElementById('settings-drawer').classList.remove('open');
+  document.getElementById('settings-overlay').classList.remove('open');
+}
+
+document.getElementById('settings-open-btn').addEventListener('click', openSettings);
+document.getElementById('settings-close-btn').addEventListener('click', closeSettings);
+document.getElementById('settings-overlay').addEventListener('click', closeSettings);
 </script>
 </body>
 </html>
