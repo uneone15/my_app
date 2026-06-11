@@ -117,10 +117,54 @@
       color: #64748b;
       padding: 2px 7px;
       border-radius: 20px;
+      flex-shrink: 0;
     }
 
     .nav-item.active .nav-count {
       color: #fff;
+    }
+
+    .nav-arrow {
+      margin-left: 4px;
+      font-size: 11px;
+      color: #475569;
+      transition: transform .2s;
+      flex-shrink: 0;
+    }
+
+    .nav-item.open .nav-arrow { transform: rotate(180deg); }
+
+    .nav-dropdown {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height .25s ease;
+    }
+
+    .nav-dropdown.open { max-height: 400px; }
+
+    .nav-sub-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px 7px 56px;
+      font-size: 13px;
+      color: #64748b;
+      cursor: pointer;
+      border-radius: 8px;
+      margin: 1px 0;
+      transition: background .15s, color .15s;
+    }
+
+    .nav-sub-item:hover { background: #1e293b; color: #e2e8f0; }
+
+    .nav-sub-item.active { color: #fff; font-weight: 600; }
+
+    .nav-sub-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.6;
+      flex-shrink: 0;
     }
 
     .sidebar-footer {
@@ -358,6 +402,32 @@
 // ── DATA ──────────────────────────────────────────────────────────────────
 const CATEGORIES = [
   {
+    id: "lecture",
+    label: "수업 강의",
+    icon: "🎓",
+    color: "#0ea5e9",
+    subs: ["전체", "ICT수업", "K-MOOC", "AI · ML", "프로그래밍", "무료 강의"],
+    services: [
+      { name:"서울 ICT 교육",         sub:"ICT수업",    desc:"구름(Goorm)과 서울시가 운영하는 ICT 전문 교육 플랫폼입니다.",                              url:"https://seoul-ict.goorm.io/",         color:"#0ea5e9" },
+      { name:"구름 Zoom 강의",        sub:"ICT수업",    desc:"구름(Goorm)에서 제공하는 Zoom 기반 온라인 강의 서비스입니다.",                               url:"https://goor.me/product_zoom01",      color:"#3b82f6" },
+      { name:"Discord",              sub:"ICT수업",    desc:"커뮤니티·학습 그룹을 위한 채팅·음성·화상 소통 플랫폼입니다.",                                url:"discord://channels/1247004488104017940/1511929795573842023", color:"#5865f2" },
+      { name:"Claude",               sub:"ICT수업",    desc:"Anthropic의 안전하고 강력한 AI 어시스턴트. 질문·코딩·문서 작성 등 다양한 작업을 도와줍니다.", url:"https://claude.ai",                   color:"#d97706" },
+      { name:"GitHub",               sub:"ICT수업",    desc:"세계 최대 코드 저장소 플랫폼. 프로젝트 관리와 협업에 사용합니다.",                           url:"https://github.com",                  color:"#1a1a1a" },
+      { name:"GitHub Desktop",       sub:"ICT수업",    desc:"설치된 GitHub Desktop 앱을 바로 실행합니다.",                                               url:"github-mac://",                       color:"#6366f1" },
+      { name:"K-MOOC",               sub:"K-MOOC",    desc:"교육부 한국형 온라인 공개강좌. 국내 대학 교수의 정규 강의를 무료로 수강할 수 있습니다.",       url:"http://www.kmooc.kr",                 color:"#6366f1" },
+      { name:"DeepLearning.AI",      sub:"AI · ML",    desc:"Andrew Ng이 설립한 AI 전문 교육 플랫폼. 딥러닝·LLM·MLOps 강의를 제공합니다.",              url:"https://www.deeplearning.ai",         color:"#0ea5e9" },
+      { name:"Fast.ai",              sub:"AI · ML",    desc:"실용적인 딥러닝 교육을 무료로 제공하는 플랫폼. 코드 먼저 접근하는 방식이 특징입니다.",        url:"https://www.fast.ai",                 color:"#ef4444" },
+      { name:"Hugging Face Learn",   sub:"AI · ML",    desc:"Hugging Face 공식 무료 강의. NLP·Diffusion·RL 등 최신 AI 기술을 다룹니다.",                  url:"https://huggingface.co/learn",        color:"#f59e0b" },
+      { name:"Google ML Crash Course",sub:"AI · ML",   desc:"Google이 제공하는 머신러닝 입문 무료 강의. TensorFlow 실습 포함됩니다.",                     url:"https://developers.google.com/machine-learning/crash-course", color:"#4285f4" },
+      { name:"Coursera",             sub:"프로그래밍",  desc:"전 세계 유명 대학·기업의 온라인 강의 플랫폼. AI·데이터사이언스 과정이 풍부합니다.",           url:"https://www.coursera.org",            color:"#0056d2" },
+      { name:"Udemy",                sub:"프로그래밍",  desc:"실무 중심의 온라인 강의 마켓플레이스. 저렴한 가격에 다양한 개발·AI 강의를 제공합니다.",        url:"https://www.udemy.com",               color:"#a435f0" },
+      { name:"edX",                  sub:"프로그래밍",  desc:"MIT·Harvard 등 명문대 강의를 온라인으로 수강할 수 있는 플랫폼입니다.",                        url:"https://www.edx.org",                 color:"#02262b" },
+      { name:"Khan Academy",         sub:"무료 강의",  desc:"수학·컴퓨터과학·AI 기초를 완전 무료로 배울 수 있는 교육 플랫폼입니다.",                       url:"https://www.khanacademy.org",         color:"#14b8a6" },
+      { name:"YouTube (AI 강의)",    sub:"무료 강의",  desc:"Andrej Karpathy·3Blue1Brown 등 AI 유명 채널의 무료 강의를 무한으로 볼 수 있습니다.",          url:"https://www.youtube.com/@AndrejKarpathy", color:"#ef4444" },
+      { name:"Kaggle Learn",         sub:"무료 강의",  desc:"Kaggle의 무료 마이크로코스. Python·ML·딥러닝·SQL을 실습 중심으로 배웁니다.",                   url:"https://www.kaggle.com/learn",        color:"#20beff" },
+    ]
+  },
+  {
     id: "ai-assistant",
     label: "AI 어시스턴트",
     icon: "🤖",
@@ -459,6 +529,25 @@ const CATEGORIES = [
       { name:"Arxiv (cs.AI)",     sub:"뉴스 & 트렌드", desc:"AI·ML 분야 최신 논문 프리프린트 저장소. 매일 수십 편의 최신 연구가 올라옵니다.",             url:"https://arxiv.org/list/cs.AI/recent", color:"#8b5cf6" },
       { name:"The Rundown AI",    sub:"뉴스 & 트렌드", desc:"AI 분야 최신 뉴스를 매일 요약·정리해서 전달하는 뉴스레터 서비스입니다.",                    url:"https://www.therundown.ai",          color:"#f59e0b" },
     ]
+  },
+  {
+    id: "design",
+    label: "디자인 래퍼",
+    icon: "🖼️",
+    color: "#f43f5e",
+    subs: ["전체", "UI 프레임워크", "컴포넌트 라이브러리", "디자인 툴"],
+    services: [
+      { name:"Tailwind CSS",   sub:"UI 프레임워크",     desc:"유틸리티 퍼스트 CSS 프레임워크. 빠른 UI 구축과 일관된 디자인 시스템 구성에 최적입니다.",     url:"https://tailwindcss.com",              color:"#0ea5e9" },
+      { name:"Bootstrap",      sub:"UI 프레임워크",     desc:"세계에서 가장 많이 쓰이는 CSS 프레임워크. 반응형 그리드와 컴포넌트를 즉시 사용할 수 있습니다.", url:"https://getbootstrap.com",            color:"#7c3aed" },
+      { name:"shadcn/ui",      sub:"컴포넌트 라이브러리", desc:"Radix UI + Tailwind 기반 고품질 컴포넌트 모음. 코드를 직접 소유하는 방식이 특징입니다.",     url:"https://ui.shadcn.com",               color:"#1a1a1a" },
+      { name:"Radix UI",       sub:"컴포넌트 라이브러리", desc:"접근성 중심의 헤드리스 UI 컴포넌트 라이브러리. shadcn/ui의 기반이 됩니다.",                 url:"https://www.radix-ui.com",            color:"#6366f1" },
+      { name:"Material UI",    sub:"컴포넌트 라이브러리", desc:"Google Material Design 기반의 React UI 컴포넌트 라이브러리입니다.",                         url:"https://mui.com",                     color:"#0ea5e9" },
+      { name:"Ant Design",     sub:"컴포넌트 라이브러리", desc:"엔터프라이즈급 React UI 컴포넌트 라이브러리. 풍부한 컴포넌트와 한국어 지원이 강점입니다.",   url:"https://ant.design",                  color:"#f43f5e" },
+      { name:"Figma",          sub:"디자인 툴",         desc:"세계 표준 UI/UX 디자인 협업 툴. 프로토타이핑·핸드오프·디자인 시스템 관리를 지원합니다.",     url:"https://www.figma.com",               color:"#f97316" },
+      { name:"Dribbble",       sub:"디자인 툴",         desc:"디자이너들의 포트폴리오·영감 공유 커뮤니티. UI 디자인 트렌드를 한눈에 파악할 수 있습니다.",   url:"https://dribbble.com",                color:"#ec4899" },
+      { name:"Awwwards",       sub:"디자인 툴",         desc:"세계 최고 수준의 웹 디자인 수상작 모음. 최신 웹 디자인 트렌드와 인터랙션을 탐색할 수 있습니다.", url:"https://www.awwwards.com",            color:"#1a1a1a" },
+      { name:"CodePen",        sub:"디자인 툴",         desc:"브라우저에서 HTML·CSS·JS를 바로 실험하는 온라인 에디터. UI 스니펫 탐색에도 유용합니다.",      url:"https://codepen.io",                  color:"#10b981" },
+    ]
   }
 ];
 
@@ -486,21 +575,53 @@ function renderSidebar() {
   const nav = document.querySelector(".sidebar-nav");
   nav.innerHTML = `<div class="nav-label">카테고리</div>`;
   CATEGORIES.forEach(cat => {
+    const isActive = cat.id === activeCatId;
+    const wrapper  = document.createElement("div");
+
+    // 메인 아이템
     const item = document.createElement("div");
-    item.className = "nav-item" + (cat.id === activeCatId ? " active" : "");
+    item.className = "nav-item" + (isActive ? " active open" : "");
     item.innerHTML = `
-      <div class="nav-icon" style="background:${cat.id === activeCatId ? cat.color : '#1e293b'}">${cat.icon}</div>
+      <div class="nav-icon" style="background:${isActive ? cat.color : '#1e293b'}">${cat.icon}</div>
       <span>${cat.label}</span>
       <span class="nav-count">${cat.services.length}</span>
+      <span class="nav-arrow">▾</span>
     `;
-    item.style.setProperty("--accent", cat.color);
-    if (cat.id === activeCatId) item.style.background = cat.color + "22";
-    item.addEventListener("click", () => {
-      activeCatId = cat.id;
-      activeSub   = "전체";
-      renderAll();
+    if (isActive) item.style.background = cat.color + "22";
+
+    // 드롭다운
+    const dropdown = document.createElement("div");
+    dropdown.className = "nav-dropdown" + (isActive ? " open" : "");
+
+    cat.subs.forEach(sub => {
+      const subItem = document.createElement("div");
+      subItem.className = "nav-sub-item" + (isActive && sub === activeSub ? " active" : "");
+      if (isActive && sub === activeSub) subItem.style.background = cat.color + "33";
+      subItem.innerHTML = `<span class="nav-sub-dot"></span>${sub}`;
+      subItem.addEventListener("click", (e) => {
+        e.stopPropagation();
+        activeCatId = cat.id;
+        activeSub   = sub;
+        renderAll();
+      });
+      dropdown.appendChild(subItem);
     });
-    nav.appendChild(item);
+
+    // 메인 아이템 클릭: 카테고리 전환 + 드롭다운 토글
+    item.addEventListener("click", () => {
+      if (activeCatId === cat.id) {
+        dropdown.classList.toggle("open");
+        item.classList.toggle("open");
+      } else {
+        activeCatId = cat.id;
+        activeSub   = "전체";
+        renderAll();
+      }
+    });
+
+    wrapper.appendChild(item);
+    wrapper.appendChild(dropdown);
+    nav.appendChild(wrapper);
   });
 }
 
@@ -549,11 +670,21 @@ function renderCards() {
   items.forEach(svc => {
     const card = document.createElement("a");
     card.className = "card";
-    card.href      = svc.url;
-    card.target    = "_blank";
     card.rel       = "noopener noreferrer";
 
-    const domain = svc.url.replace(/https?:\/\/(www\.)?/, "").replace(/\/.*/,"");
+    const isApp = svc.url.startsWith("discord://") || svc.url.startsWith("github-mac://");
+    if (isApp) {
+      card.href = "javascript:void(0)";
+      card.addEventListener("click", () => { window.location.href = svc.url; });
+    } else {
+      card.href   = svc.url;
+      card.target = "_blank";
+    }
+
+    const appNames = { "discord://": "discord 앱", "github-mac://": "GitHub Desktop 앱" };
+    const domain = isApp
+      ? (appNames[svc.url] || "로컬 앱")
+      : svc.url.replace(/https?:\/\/(www\.)?/, "").replace(/\/.*/,"");
 
     card.innerHTML = `
       <div class="card-header">
