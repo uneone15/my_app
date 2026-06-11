@@ -167,6 +167,70 @@
       flex-shrink: 0;
     }
 
+    /* ── AUTH MODAL ── */
+    #auth-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.5);
+      z-index: 400;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    #auth-overlay.open { display: flex; }
+
+    #auth-modal {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 18px;
+      padding: 32px 28px;
+      width: 320px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.5);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    #auth-modal h3 {
+      font-size: 17px; font-weight: 700; color: #f1f5f9;
+      text-align: center;
+    }
+    #auth-modal p {
+      font-size: 12px; color: #64748b; text-align: center; margin-top: -10px;
+    }
+    .auth-input {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 14px;
+      color: #f1f5f9;
+      outline: none;
+      transition: border-color .18s;
+    }
+    .auth-input:focus { border-color: #6366f1; }
+    .auth-btn {
+      width: 100%;
+      padding: 11px;
+      border-radius: 10px;
+      border: none;
+      background: #6366f1;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    .auth-btn:hover { opacity: .85; }
+    .auth-error {
+      font-size: 12px; color: #f87171;
+      text-align: center; display: none;
+    }
+    .auth-cancel {
+      font-size: 12px; color: #475569;
+      text-align: center; cursor: pointer;
+    }
+    .auth-cancel:hover { color: #94a3b8; }
+
     /* ── SETTINGS BTN ── */
     .settings-btn {
       display: flex;
@@ -560,6 +624,19 @@
   </div>
 </nav>
 
+<!-- ─────────── AUTH MODAL ─────────── -->
+<div id="auth-overlay">
+  <div id="auth-modal">
+    <h3 id="auth-title">🔒 설정 잠금 해제</h3>
+    <p id="auth-desc">비밀번호를 입력하세요</p>
+    <input class="auth-input" id="auth-pw" type="password" placeholder="비밀번호" autocomplete="off" />
+    <input class="auth-input" id="auth-pw2" type="password" placeholder="비밀번호 확인" autocomplete="off" style="display:none" />
+    <div class="auth-error" id="auth-error">비밀번호가 틀렸습니다</div>
+    <button class="auth-btn" id="auth-submit">확인</button>
+    <div class="auth-cancel" id="auth-cancel">취소</div>
+  </div>
+</div>
+
 <!-- ─────────── SETTINGS DRAWER ─────────── -->
 <div id="settings-overlay"></div>
 <div id="settings-drawer">
@@ -570,6 +647,17 @@
   <div class="drawer-body">
     <div class="drawer-section-title">카테고리 공개 / 비공개</div>
     <div id="cat-toggle-list"></div>
+    <div style="margin-top:28px">
+      <div class="drawer-section-title">계정</div>
+      <div class="cat-toggle-row" style="cursor:pointer" id="change-pw-btn">
+        <div class="cat-toggle-info"><span>🔑 비밀번호 변경</span></div>
+        <span style="font-size:12px;color:#94a3b8">→</span>
+      </div>
+      <div class="cat-toggle-row" style="cursor:pointer" id="logout-btn">
+        <div class="cat-toggle-info"><span>🚪 로그아웃</span></div>
+        <span style="font-size:12px;color:#94a3b8">→</span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -912,6 +1000,96 @@ renderAll();
 
 document.getElementById("search-input").addEventListener("input", renderCards);
 
+// ── AUTH ──────────────────────────────────────────────────────────────────
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+let authCallback = null;
+
+function openAuthModal(mode = 'login', onSuccess) {
+  authCallback = onSuccess;
+  const title  = document.getElementById('auth-title');
+  const desc   = document.getElementById('auth-desc');
+  const pw2    = document.getElementById('auth-pw2');
+  const err    = document.getElementById('auth-error');
+  const submit = document.getElementById('auth-submit');
+
+  document.getElementById('auth-pw').value = '';
+  document.getElementById('auth-pw2').value = '';
+  err.style.display = 'none';
+
+  if (mode === 'setup') {
+    title.textContent  = '🔑 비밀번호 설정';
+    desc.textContent   = '처음 사용합니다. 비밀번호를 설정하세요.';
+    pw2.style.display  = 'block';
+    submit.textContent = '비밀번호 설정';
+  } else if (mode === 'change') {
+    title.textContent  = '🔑 비밀번호 변경';
+    desc.textContent   = '새 비밀번호를 입력하세요.';
+    pw2.style.display  = 'block';
+    submit.textContent = '변경';
+  } else {
+    title.textContent  = '🔒 설정 잠금 해제';
+    desc.textContent   = '비밀번호를 입력하세요.';
+    pw2.style.display  = 'none';
+    submit.textContent = '확인';
+  }
+
+  document.getElementById('auth-overlay').classList.add('open');
+  document.getElementById('auth-pw').focus();
+}
+
+function closeAuthModal() {
+  document.getElementById('auth-overlay').classList.remove('open');
+  authCallback = null;
+}
+
+document.getElementById('auth-submit').addEventListener('click', async () => {
+  const pw    = document.getElementById('auth-pw').value;
+  const pw2   = document.getElementById('auth-pw2').value;
+  const err   = document.getElementById('auth-error');
+  const title = document.getElementById('auth-title').textContent;
+  const stored = localStorage.getItem('myapp_pw_hash');
+
+  if (!pw) { err.textContent = '비밀번호를 입력하세요'; err.style.display = 'block'; return; }
+
+  // 비밀번호 설정 / 변경 모드
+  if (document.getElementById('auth-pw2').style.display !== 'none') {
+    if (pw !== pw2) { err.textContent = '비밀번호가 일치하지 않습니다'; err.style.display = 'block'; return; }
+    if (pw.length < 4) { err.textContent = '4자 이상 입력하세요'; err.style.display = 'block'; return; }
+    const hash = await sha256(pw);
+    localStorage.setItem('myapp_pw_hash', hash);
+    sessionStorage.setItem('myapp_admin', '1');
+    closeAuthModal();
+    if (authCallback) authCallback();
+    return;
+  }
+
+  // 로그인 모드
+  const hash = await sha256(pw);
+  if (hash === stored) {
+    sessionStorage.setItem('myapp_admin', '1');
+    err.style.display = 'none';
+    closeAuthModal();
+    if (authCallback) authCallback();
+  } else {
+    err.textContent = '비밀번호가 틀렸습니다';
+    err.style.display = 'block';
+    document.getElementById('auth-pw').value = '';
+    document.getElementById('auth-pw').focus();
+  }
+});
+
+document.getElementById('auth-pw').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('auth-submit').click();
+});
+document.getElementById('auth-pw2').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('auth-submit').click();
+});
+document.getElementById('auth-cancel').addEventListener('click', closeAuthModal);
+
 // ── SETTINGS ──────────────────────────────────────────────────────────────
 function openSettings() {
   const list = document.getElementById('cat-toggle-list');
@@ -955,9 +1133,25 @@ function closeSettings() {
   document.getElementById('settings-overlay').classList.remove('open');
 }
 
-document.getElementById('settings-open-btn').addEventListener('click', openSettings);
+document.getElementById('settings-open-btn').addEventListener('click', () => {
+  const stored  = localStorage.getItem('myapp_pw_hash');
+  const isAdmin = sessionStorage.getItem('myapp_admin') === '1';
+  if (isAdmin) { openSettings(); return; }
+  openAuthModal(stored ? 'login' : 'setup', openSettings);
+});
+
 document.getElementById('settings-close-btn').addEventListener('click', closeSettings);
 document.getElementById('settings-overlay').addEventListener('click', closeSettings);
+
+document.getElementById('change-pw-btn').addEventListener('click', () => {
+  closeSettings();
+  openAuthModal('change', () => { openSettings(); });
+});
+
+document.getElementById('logout-btn').addEventListener('click', () => {
+  sessionStorage.removeItem('myapp_admin');
+  closeSettings();
+});
 </script>
 </body>
 </html>
